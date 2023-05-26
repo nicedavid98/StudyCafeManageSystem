@@ -9,9 +9,8 @@ public class Member<T extends Number> extends Person {
 	String PW;
 	T leftTime;
 	
-	public Member(String name, String phoneNum, String id, String pw, T leftTime) {
-		this.name = name;
-		this.phoneNum = phoneNum;
+	public Member(String name, String phoneNum, String birthDate, String id, String pw, T leftTime) {
+		super(name, phoneNum, birthDate);
 		this.ID = id;
 		this.PW = pw;
 		this.leftTime = leftTime;
@@ -40,4 +39,6 @@ public class Member<T extends Number> extends Person {
 	public void setLeftTime(T leftTime) {
 		this.leftTime = leftTime;
 	}
+
+	
 }

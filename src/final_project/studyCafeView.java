@@ -51,6 +51,9 @@ public class studyCafeView extends JFrame {
 	JTextField inputSeatNum;
 	JButton logInButton;
 	JButton signUpButton;
+	
+	
+	JLabel cardSlotLabel;
 
 	// Components of seatStatusPanel
 	String seatStatusTexts[]; // String that will displayed in each seat status Label
@@ -248,12 +251,19 @@ public class studyCafeView extends JFrame {
 		signUpButton.setBackground(skkuNavy);
 		signUpButton.setBounds(170, 260, 100, 30);
 		inputPanel.add(signUpButton);
+		
+		// Panel containing Card slot image for design
+		ImageIcon cardSlot = new ImageIcon(studyCafeView.class.getResource("cardslot.png"));
+		cardSlotLabel = new JLabel();
+		cardSlotLabel.setIcon(cardSlot);
+		cardSlotLabel.setBounds(635, 385, 300, 150);
 
 		// Add inputPanel & seatStatusPanel to mainPanel
 		mainPanel.add(inputPanel);
 		mainPanel.add(seatStatusPanel);
 
 		// Add mainPanel & abovePanel to JFrame
+		add(cardSlotLabel);
 		add(mainPanel);
 		add(abovePanel);
 

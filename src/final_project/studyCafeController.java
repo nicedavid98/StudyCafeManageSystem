@@ -45,10 +45,10 @@ public class studyCafeController implements ActionListener {
 			}
 			System.exit(0);
 		}
-		
+
 		// Actions when clicking SignUp Button
 		if (e.getSource() == view.signUpButton) {
-			SignUpWindow signUpWindow = new SignUpWindow(this.model); 
+			SignUpWindow signUpWindow = new SignUpWindow(this.model);
 		}
 
 		// Actions when clicking Log out Buttons
@@ -59,8 +59,14 @@ public class studyCafeController implements ActionListener {
 				for (int j = 0; j < model.MemberList.size(); j++) {
 					if (workers[j] != null) {
 						if (workers[j].mySeat == i) {
-							workers[j].stopWork();
 							
+							// Update number of remaining seat
+							view.numOfRemainingSeat++;
+							// Update number of remaining seat in GUI (Above Green Panel)
+							view.leftSeatNumArea.setText("" + view.numOfRemainingSeat);
+							view.occupiedNumArea.setText("" + (20 - view.numOfRemainingSeat));
+							
+							workers[j].stopWork();
 							// Delete the initialized worker(Thread)
 							// Because we determine whether certain seat is empty or occupied by searching worker class
 							workers[j] = null;
@@ -83,9 +89,9 @@ public class studyCafeController implements ActionListener {
 
 				// Save member's info by for loop
 				for (int i = 0; i < model.MemberList.size(); i++) {
-					String text = model.MemberList.get(i).getName() + "/" + model.MemberList.get(i).getPhoneNum() + "/"
-							+ model.MemberList.get(i).getID() + "/" + model.MemberList.get(i).getPW() + "/"
-							+ model.MemberList.get(i).getLeftTime() + "\n";
+					String text = model.MemberList.get(i).getName() + " " + model.MemberList.get(i).getPhoneNum() + " "
+							+ model.MemberList.get(i).getBirthDate() + " " + model.MemberList.get(i).getID() + " "
+							+ model.MemberList.get(i).getPW() + " " + model.MemberList.get(i).getLeftTime() + "\n";
 					x.print(text);
 				}
 				x.close();
@@ -122,20 +128,20 @@ public class studyCafeController implements ActionListener {
 				if (myID.equals("") || myPW.equals("") || mySeat.equals("")) {
 					throw new EmptyInputException();
 				}
-				
-				// Check if the seat Number that user inputed is Integer 
+
+				// Check if the seat Number that user inputed is Integer
 				// Automatically throw NumberFormatException if the input is invalid
 				Integer.parseInt(mySeat);
-				
+
 				// Check if the user selected already occupied seat
 				for (int i = 0; i < model.MemberList.size(); i++) {
 					if (workers[i] != null) {
 						if (Integer.parseInt(mySeat) == workers[i].mySeat) {
 							throw new OccupiedSeatException();
-						}	
+						}
 					}
 				}
-			
+
 				// Check ID and PW
 				for (index = 0; index < model.MemberList.size(); index++) {
 					// If input Id is existing, check PW
@@ -248,7 +254,7 @@ public class studyCafeController implements ActionListener {
 				// In this program, it is arbitrarily set
 				// so that one repetition of the while loop means one minute.
 				// I can modify this value to make the time seems to run faster
-				Thread.sleep(500);
+				Thread.sleep(50);
 
 				// Every repetition of the while loop, the time left for user decreases
 				model.MemberList.get(myIndex).leftTime--;
@@ -261,6 +267,15 @@ public class studyCafeController implements ActionListener {
 				// If this while loop ends as the user spend all time remaining
 				if (model.MemberList.get(myIndex).leftTime <= 0) {
 					view.seatTextPanes[mySeat].setText("Empty Seat");
+					
+					// Update number of remaining seat
+					view.numOfRemainingSeat++;
+					// Update number of remaining seat in GUI (Above Green Panel)
+					view.leftSeatNumArea.setText("" + view.numOfRemainingSeat);
+					view.occupiedNumArea.setText("" + (20 - view.numOfRemainingSeat));
+					
+					stopWork();
+					workers[myIndex] = null;
 				}
 			}
 			// If this while loop ends as the user log out

@@ -18,11 +18,12 @@ public class SignUpWindow extends JFrame{
 	JTextField inputID;
 	JLabel pwLabel;
 	JTextField inputPW;
-	
 	JLabel nameLabel;
 	JTextField inputName;
 	JLabel phoneNumLabel;
 	JTextField inputPhoneNum;
+	JLabel birthDateLabel;
+	JTextField inputBirthDate;
 	
 	JButton signUpButton;
 	
@@ -42,7 +43,7 @@ public class SignUpWindow extends JFrame{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(null);
 		setTitle("Sign Up");
-		setSize(300, 220);
+		setSize(300, 250);
 		
 		// To access member's ArrayList 
 		// Use when checking ID is already existing and
@@ -84,12 +85,21 @@ public class SignUpWindow extends JFrame{
 		inputPhoneNum = new JTextField();
 		inputPhoneNum.setBounds(120, 100, 150, 20);
 		add(inputPhoneNum);
+		
+		birthDateLabel = new JLabel();
+		birthDateLabel.setBounds(20, 130, 100, 20);
+		birthDateLabel.setText("Birth Date");
+		add(birthDateLabel);
+
+		inputBirthDate = new JTextField();
+		inputBirthDate.setBounds(120, 130, 150, 20);
+		add(inputBirthDate);
 
 		signUpButton = new JButton();
 		signUpButton.setText("Sign Up");
 		signUpButton.setForeground(Color.white);
 		signUpButton.setBackground(skkuNavy);
-		signUpButton.setBounds(100, 140, 100, 30);
+		signUpButton.setBounds(100, 170, 100, 30);
 		
 		// Add ActionListener to Sign up button
 		signUpButton.addActionListener(new ActionListener() {
@@ -106,6 +116,7 @@ public class SignUpWindow extends JFrame{
 				String myPW = inputPW.getText();
 				String myName = inputName.getText();
 				String myPhoneNum = inputPhoneNum.getText();
+				String myBirthDate = inputBirthDate.getText();
 				
 				try {
 					
@@ -121,8 +132,13 @@ public class SignUpWindow extends JFrame{
 						}
 					}
 					
+					// Check if input of birth date is invalid
+					String[] result = myBirthDate.split("/");
+					if (result.length != 3)
+						throw new BirthDayFormatException();
+					
 					// Check if input of phone number is invalid
-					if (myPhoneNum.indexOf(" ") != 2 || myPhoneNum.indexOf("-") != 7)
+					if (myPhoneNum.charAt(3) != '-' || myPhoneNum.charAt(8) != '-')
 						throw new PhoneNumFormatException();
 					
 					// Passed all of the Exception handling
@@ -134,22 +150,23 @@ public class SignUpWindow extends JFrame{
 				} catch (ExistingIDException ex) {
 					JOptionPane.showMessageDialog(SignUpWindow.this, "Inserted ID already exists. Try Again!", "Error",
 							JOptionPane.ERROR_MESSAGE);
+				} catch (BirthDayFormatException ex) {
+					JOptionPane.showMessageDialog(SignUpWindow.this, "Birthdate must be in '06/06/1995' format. Try Again!", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				} catch (PhoneNumFormatException ex) {
-					JOptionPane.showMessageDialog(SignUpWindow.this, "Proper format for a phone number is ‘10 2158-0222’", "Error",
+					JOptionPane.showMessageDialog(SignUpWindow.this, "Proper format for a phone number is ‘010-2158-0222’. Try Again!", "Error",
 							JOptionPane.ERROR_MESSAGE);
 				}
 				
 				// When Sign-up is valid (No exception)
 				if (isValidSignUp == true) {
 					// Create new member class and append it to member List
-					Member<Integer> mem = new Member<Integer>(myName, myPhoneNum, myID, myPW, 0);
+					Member<Integer> mem = new Member<Integer>(myName, myPhoneNum, myBirthDate, myID, myPW, 0);
 					model.MemberList.add(mem);
 					
 					// Close the sign up window
 					dispose();
 				}
-				
-				
 			}
 		});
 		
@@ -157,5 +174,4 @@ public class SignUpWindow extends JFrame{
 		
 		setVisible(true);
 	}
-	
 }
