@@ -28,7 +28,8 @@ public class studyCafeController implements ActionListener {
 		this.view.setActionListener(this);
 
 		// Initialize thread
-		workers = new ubdateWorker[model.MemberList.size()];
+		//workers = new ubdateWorker[model.MemberList.size()];
+		workers = new ubdateWorker[100];
 
 	}
 
@@ -147,10 +148,15 @@ public class studyCafeController implements ActionListener {
 					// If input Id is existing, check PW
 					if (model.MemberList.get(index).ID.equals(myID)) {
 						if (model.MemberList.get(index).PW.equals(myPW)) {
+							
 							// Check if the user have no remaining time but selected "Use remaining time"
 							if (myPaymentPlan == 0 && model.MemberList.get(index).leftTime == 0) {
 								throw new NoTimeLeftException();
 							}
+							
+							// Check if the user made duplicate login
+							if (workers[index] != null)
+								throw new DuplicateLoginException();
 
 							// Succeed
 							isValidLogIn = true;
@@ -183,6 +189,9 @@ public class studyCafeController implements ActionListener {
 						JOptionPane.ERROR_MESSAGE);
 			} catch (NoTimeLeftException ex) {
 				JOptionPane.showMessageDialog(view, "You have to recharge your remaining time", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			} catch (DuplicateLoginException ex) {
+				JOptionPane.showMessageDialog(view, "Duplicate login. Cannot Log-In twice", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
 
@@ -254,7 +263,7 @@ public class studyCafeController implements ActionListener {
 				// In this program, it is arbitrarily set
 				// so that one repetition of the while loop means one minute.
 				// I can modify this value to make the time seems to run faster
-				Thread.sleep(50);
+				Thread.sleep(200);
 
 				// Every repetition of the while loop, the time left for user decreases
 				model.MemberList.get(myIndex).leftTime--;
